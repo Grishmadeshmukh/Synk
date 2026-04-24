@@ -117,6 +117,10 @@ function renderSource(source) {
 }
 
 joinBtn.addEventListener("click", () => {
+  if (!socket.connected) {
+    alert("Still connecting to server. Please wait a moment and try again.");
+    return;
+  }
   const value = getRoomId();
   if (!value) return;
   roomId = value;
@@ -127,6 +131,10 @@ joinBtn.addEventListener("click", () => {
 });
 
 uploadBtn.addEventListener("click", async () => {
+  if (!socket.connected) {
+    alert("Still connecting to server. Please wait a moment and try again.");
+    return;
+  }
   if (!roomId) {
     alert("Join a room first.");
     return;
@@ -151,6 +159,10 @@ uploadBtn.addEventListener("click", async () => {
 });
 
 youtubeBtn.addEventListener("click", () => {
+  if (!socket.connected) {
+    alert("Still connecting to server. Please wait a moment and try again.");
+    return;
+  }
   if (!roomId) {
     alert("Join a room first.");
     return;
@@ -164,6 +176,10 @@ youtubeBtn.addEventListener("click", () => {
 });
 
 platformBtn.addEventListener("click", () => {
+  if (!socket.connected) {
+    alert("Still connecting to server. Please wait a moment and try again.");
+    return;
+  }
   if (!roomId) {
     alert("Join a room first.");
     return;
@@ -185,26 +201,34 @@ sendBtn.addEventListener("click", () => {
   chatInput.value = "";
 });
 
-fullscreenBtn.addEventListener("click", async () => {
-  if (!layoutEl) return;
-  const isFocused = layoutEl.classList.toggle("focus-video");
-  if (isFocused) {
-    fullscreenBtn.textContent = "Exit Focus Video";
-    return;
-  }
-  fullscreenBtn.textContent = "Focus Video (chat on side)";
-});
+if (fullscreenBtn && layoutEl) {
+  fullscreenBtn.addEventListener("click", async () => {
+    const isFocused = layoutEl.classList.toggle("focus-video");
+    if (isFocused) {
+      fullscreenBtn.textContent = "Exit Focus Video";
+      return;
+    }
+    fullscreenBtn.textContent = "Focus Video (chat on side)";
+  });
 
-document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement) return;
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) return;
 
-  if (document.fullscreenElement !== layoutEl) {
-    document.exitFullscreen().catch(() => {});
-    layoutEl.classList.add("focus-video");
+    if (document.fullscreenElement !== layoutEl) {
+      document.exitFullscreen().catch(() => {});
+      layoutEl.classList.add("focus-video");
+      fullscreenBtn.textContent = "Exit Focus Video";
+      return;
+    }
     fullscreenBtn.textContent = "Exit Focus Video";
-    return;
-  }
-  fullscreenBtn.textContent = "Exit Focus Video";
+  });
+}
+
+socket.on("connect_error", () => {
+  appendMessage({
+    username: "System",
+    text: "Connection issue. Retrying...",
+  });
 });
 
 socket.on("room-state", (state) => {
