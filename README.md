@@ -42,13 +42,12 @@ Notes:
 ## Notes and limitations
 
 - DRM platforms (Netflix, Prime Video, etc.) cannot be supported through embedding due to legal/technical restrictions.
-- Playback sync is implemented for HTML5 video (`mp4`); YouTube/embed sync is not yet implemented in this MVP.
+- Playback sync is implemented for HTML5 video (`mp4`) and YouTube sources.
 - Uploaded videos are temporary and tied to a room session.
 - MP4 uploads are automatically deleted when the last participant leaves the room.
 
 ## Next improvements
 
-- Implement YouTube IFrame API sync.
 - Add authentication and private rooms.
 - Persist chat/video state to a database (Redis/Postgres).
 - Add deployment (Render/Railway/Fly.io + object storage for uploads).
