@@ -64,6 +64,19 @@ function cleanupRoomUploads(roomId) {
   roomUploads.delete(roomId);
 }
 
+function getParticipantNames(roomState) {
+  return Object.values(roomState.members || {});
+}
+
+function emitParticipants(roomId) {
+  const roomState = roomStates.get(roomId);
+  if (!roomState) return;
+  io.to(roomId).emit("participants-updated", {
+    roomId,
+    participants: getParticipantNames(roomState),
+  });
+}
+
 app.post("/api/upload", upload.single("video"), (req, res) => {
   const roomId = String(req.body.roomId || "").trim();
   if (!req.file) {
@@ -99,34 +112,48 @@ io.on("connection", (socket) => {
     if (!roomStates.has(roomId)) {
       roomStates.set(roomId, {
         source: null,
-        playback: { currentTime: 0, paused: true },
+        playback: { currentTime: 0, paused: true, sourceType: null },
         participants: 0,
+        members: {},
       });
     }
-    roomStates.get(roomId).participants += 1;
+    const roomState = roomStates.get(roomId);
+    roomState.members[socket.id] = socket.data.username;
+    roomState.participants = Object.keys(roomState.members).length;
 
-    socket.emit("room-state", roomStates.get(roomId));
+    socket.emit("room-state", {
+      ...roomState,
+      participantsList: getParticipantNames(roomState),
+    });
     io.to(roomId).emit("chat-message", {
       username: "System",
       text: `${socket.data.username} entered the room :))`,
       ts: Date.now(),
     });
+    emitParticipants(roomId);
   });
 
   socket.on("set-source", ({ roomId, source }) => {
     if (!roomStates.has(roomId)) return;
     const current = roomStates.get(roomId);
     current.source = source;
-    current.playback = { currentTime: 0, paused: true };
+    current.playback = { currentTime: 0, paused: true, sourceType: source.sourceType };
     io.to(roomId).emit("source-updated", source);
   });
 
   socket.on("playback-event", ({ roomId, event }) => {
     if (!roomStates.has(roomId)) return;
     const current = roomStates.get(roomId);
+    const nextPaused =
+      event.type === "play"
+        ? false
+        : event.type === "pause"
+          ? true
+          : current.playback.paused;
     current.playback = {
       currentTime: event.currentTime ?? current.playback.currentTime,
-      paused: event.type !== "play",
+      paused: nextPaused,
+      sourceType: event.sourceType || current.playback.sourceType,
     };
     socket.to(roomId).emit("playback-event", event);
   });
@@ -145,13 +172,15 @@ io.on("connection", (socket) => {
     if (!roomId) return;
     const roomState = roomStates.get(roomId);
     if (roomState) {
-      roomState.participants = Math.max(0, roomState.participants - 1);
+      delete roomState.members[socket.id];
+      roomState.participants = Object.keys(roomState.members).length;
     }
     socket.to(roomId).emit("chat-message", {
       username: "System",
       text: `${username || "Someone"} left the room :(`,
       ts: Date.now(),
     });
+    emitParticipants(roomId);
 
     if (!roomState || roomState.participants > 0) return;
     cleanupRoomUploads(roomId);
@@ -160,6 +189,6 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`WatchTogether app running at http://localhost:${PORT}`);
+  console.log(`Synk app running at http://localhost:${PORT}`);
   console.log("Temporary upload cleanup enabled for active room sessions.");
 });
