@@ -117,10 +117,13 @@ function renderSource(source) {
 }
 
 joinBtn.addEventListener("click", () => {
+<<<<<<< HEAD
   if (!socket.connected) {
     alert("Still connecting to server. Please wait a moment and try again.");
     return;
   }
+=======
+>>>>>>> 7b1c4b1 (add files)
   const value = getRoomId();
   if (!value) return;
   roomId = value;
@@ -131,10 +134,13 @@ joinBtn.addEventListener("click", () => {
 });
 
 uploadBtn.addEventListener("click", async () => {
+<<<<<<< HEAD
   if (!socket.connected) {
     alert("Still connecting to server. Please wait a moment and try again.");
     return;
   }
+=======
+>>>>>>> 7b1c4b1 (add files)
   if (!roomId) {
     alert("Join a room first.");
     return;
@@ -159,10 +165,13 @@ uploadBtn.addEventListener("click", async () => {
 });
 
 youtubeBtn.addEventListener("click", () => {
+<<<<<<< HEAD
   if (!socket.connected) {
     alert("Still connecting to server. Please wait a moment and try again.");
     return;
   }
+=======
+>>>>>>> 7b1c4b1 (add files)
   if (!roomId) {
     alert("Join a room first.");
     return;
@@ -176,10 +185,13 @@ youtubeBtn.addEventListener("click", () => {
 });
 
 platformBtn.addEventListener("click", () => {
+<<<<<<< HEAD
   if (!socket.connected) {
     alert("Still connecting to server. Please wait a moment and try again.");
     return;
   }
+=======
+>>>>>>> 7b1c4b1 (add files)
   if (!roomId) {
     alert("Join a room first.");
     return;
@@ -201,6 +213,7 @@ sendBtn.addEventListener("click", () => {
   chatInput.value = "";
 });
 
+<<<<<<< HEAD
 if (fullscreenBtn && layoutEl) {
   fullscreenBtn.addEventListener("click", async () => {
     const isFocused = layoutEl.classList.toggle("focus-video");
@@ -229,6 +242,28 @@ socket.on("connect_error", () => {
     username: "System",
     text: "Connection issue. Retrying...",
   });
+=======
+fullscreenBtn.addEventListener("click", async () => {
+  if (!layoutEl) return;
+  const isFocused = layoutEl.classList.toggle("focus-video");
+  if (isFocused) {
+    fullscreenBtn.textContent = "Exit Focus Video";
+    return;
+  }
+  fullscreenBtn.textContent = "Focus Video (chat on side)";
+});
+
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) return;
+
+  if (document.fullscreenElement !== layoutEl) {
+    document.exitFullscreen().catch(() => {});
+    layoutEl.classList.add("focus-video");
+    fullscreenBtn.textContent = "Exit Focus Video";
+    return;
+  }
+  fullscreenBtn.textContent = "Exit Focus Video";
+>>>>>>> 7b1c4b1 (add files)
 });
 
 socket.on("room-state", (state) => {
