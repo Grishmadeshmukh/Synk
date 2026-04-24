@@ -1,0 +1,165 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #1a102f;
+  color: #f5edff;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.panel,
+.chat {
+  background: #25143f;
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid #4c2a79;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+input,
+button {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #6c43a6;
+  background: #36195b;
+  color: #f5edff;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background: #4e2d82;
+}
+
+.source-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.source-grid h3 {
+  margin: 0.2rem 0 0.5rem;
+  font-size: 0.95rem;
+}
+
+.video-wrapper {
+  margin-top: 1rem;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #140926;
+  border: 1px solid #6c43a6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.video-wrapper video,
+.video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.muted {
+  color: #cfb6f5;
+  font-size: 0.9rem;
+}
+
+.messages {
+  height: 70vh;
+  overflow-y: auto;
+  background: #1b0f31;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  border: 1px solid #4c2a79;
+}
+
+.msg {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.msg strong {
+  color: #ddb6ff;
+}
+
+.video-actions {
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.layout:fullscreen {
+  background: #1a102f;
+  padding: 1rem;
+  grid-template-columns: 2fr 1fr;
+}
+
+.layout:fullscreen .messages {
+  height: calc(100vh - 8rem);
+}
+
+.layout.focus-video {
+  height: 100vh;
+  overflow: hidden;
+  grid-template-columns: 3fr 1fr;
+}
+
+.layout.focus-video .panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.layout.focus-video .panel > :not(.video-actions):not(.video-wrapper) {
+  display: none;
+}
+
+.layout.focus-video .video-actions {
+  margin-top: 0;
+}
+
+.layout.focus-video .video-wrapper {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  margin-top: 0;
+  aspect-ratio: auto;
+}
+
+.layout.focus-video .chat {
+  min-height: 0;
+}
+
+.layout.focus-video .messages {
+  height: calc(100vh - 8rem);
+}
+
+@media (max-width: 980px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .source-grid {
+    grid-template-columns: 1fr;
+  }
+}

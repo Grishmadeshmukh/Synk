@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Synk</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <section class="panel">
+        <h1>Synk</h1>
+        <div class="row">
+          <input id="roomId" placeholder="Room ID (e.g. movie-night)" />
+          <input id="username" placeholder="Your name" />
+          <button id="joinBtn">Join</button>
+        </div>
+
+        <h2>Choose Video Source</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Upload MP4</h3>
+            <input id="mp4Input" type="file" accept="video/mp4" />
+            <button id="uploadBtn">Upload & Share</button>
+          </div>
+          <div>
+            <h3>YouTube Link</h3>
+            <input id="youtubeInput" placeholder="https://youtube.com/watch?v=..." />
+            <button id="youtubeBtn">Share YouTube</button>
+          </div>
+          <div>
+            <h3>Other Public Link</h3>
+            <input id="platformInput" placeholder="Direct .mp4 or embeddable URL" />
+            <button id="platformBtn">Share Link</button>
+          </div>
+        </div>
+
+        <p class="muted">
+          Note: Netflix and other DRM-protected platforms cannot be embedded/shared this way.
+        </p>
+
+        <div class="row video-actions">
+          <button id="fullscreenBtn">Focus Video (chat on side)</button>
+        </div>
+        <div id="videoWrapper" class="video-wrapper"></div>
+      </section>
+
+      <aside class="chat">
+        <h2>Room Chat</h2>
+        <div id="messages" class="messages"></div>
+        <div class="row">
+          <input id="chatInput" placeholder="Type a message..." />
+          <button id="sendBtn">Send</button>
+        </div>
+      </aside>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
